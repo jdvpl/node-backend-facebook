@@ -4,6 +4,7 @@ const User = require("../models/user");
 const { validateUsername } = require("../helpers/validation");
 const { generateJWT } = require("../helpers/generate-jwt");
 const { sendEmail } = require("../helpers/mailer");
+const jwt = require("jsonwebtoken");
 
 const userGet = async (req, res = response) => {
   const estado = { status: true };
@@ -45,7 +46,7 @@ const userRegister = async (req, res = response) => {
     await user.save();
     const emailVerificationToken = generateJWT(
       { id: user.id.toString() },
-      "30m"
+      "2h"
     );
     const url = `${process.env.BASE_URL}/activate/${emailVerificationToken}`;
     const data = {
@@ -55,7 +56,6 @@ const userRegister = async (req, res = response) => {
     };
     sendEmail(data);
     const token = generateJWT({ id: user.id.toString() }, "7d");
-
     return res.json({
       id: user.id,
       username: user.username,
@@ -70,7 +70,26 @@ const userRegister = async (req, res = response) => {
   }
 };
 
+const activateAccount = async (req, res) => {
+  const { token } = req.body;
+  try {
+    const user = jwt.verify(token, process.env.SECRETORPUBLICKEY);
+    const check = await User.findById(user.id);
+    if (check.verified) {
+      return res.status(200).json({ msg: "This email is already activated." });
+    } else {
+      await User.findByIdAndUpdate(user.id, { verified: true });
+      return res
+        .status(200)
+        .json({ msg: "Account has been activated successfully." });
+    }
+  } catch (error) {
+    return res.status(500).json({ msg: error.message });
+  }
+};
+
 module.exports = {
   userGet,
   userRegister,
+  activateAccount,
 };

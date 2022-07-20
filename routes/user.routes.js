@@ -1,7 +1,11 @@
 const { Router } = require("express");
 const { check } = require("express-validator");
 
-const { userGet, userRegister } = require("../controllers/user.controller");
+const {
+  userGet,
+  userRegister,
+  activateAccount,
+} = require("../controllers/user.controller");
 const { existsEmail } = require("../helpers/db-validators");
 const { validarCampos } = require("../middlewares/validar-campos");
 
@@ -35,5 +39,10 @@ router.post(
   userRegister
 );
 router.get("/", userGet);
+router.post(
+  "/activate",
+  [check("token", "Token is required").not().isEmpty(), validarCampos],
+  activateAccount
+);
 
 module.exports = router;
