@@ -1,13 +1,14 @@
 const { request, response } = require("express");
-const User = require("../models/User");
+const User = require("../models/user");
 
-const existeCorreo = async (email = "") => {
+const existsEmail = async (email = "") => {
   // verificar si el correo existe
   const existsEmail = await User.findOne({ email });
   if (existsEmail) {
     throw new Error(`The email ${email} already exists.`);
   }
 };
+
 const noExisteCorreo = async (email = "") => {
   // verificar si el correo existe
   const noExistsEmail = await User.findOne({ email });
@@ -25,7 +26,7 @@ const existeID = async (id = "") => {
 };
 
 module.exports = {
-  existeCorreo,
+  existsEmail,
   existeID,
   noExisteCorreo,
 };
