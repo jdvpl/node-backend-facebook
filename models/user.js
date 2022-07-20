@@ -1,5 +1,4 @@
 const { Schema, model } = require("mongoose");
-const { ObjectId } = mongoose.Schema;
 const userSchema = Schema(
   {
     first_name: {
@@ -83,7 +82,7 @@ const userSchema = Schema(
     },
     search: [
       {
-        type: ObjectId,
+        type: Schema.Types.ObjectId,
         ref: "User",
       },
     ],
@@ -123,7 +122,7 @@ const userSchema = Schema(
     savedPosts: [
       {
         post: {
-          type: ObjectId,
+          type: Schema.Types.ObjectId,
           ref: "Post",
         },
         savedAt: {
