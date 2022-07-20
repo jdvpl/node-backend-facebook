@@ -3,6 +3,7 @@ const bcrypt = require("bcryptjs");
 const User = require("../models/user");
 const { validateUsername } = require("../helpers/validation");
 const { generateJWT } = require("../helpers/generate-jwt");
+const { sendEmail } = require("../helpers/mailer");
 
 const userGet = async (req, res = response) => {
   const estado = { status: true };
@@ -18,7 +19,6 @@ const userRegister = async (req, res = response) => {
   const {
     first_name,
     last_name,
-    user_name,
     email,
     password,
     gender,
@@ -34,7 +34,7 @@ const userRegister = async (req, res = response) => {
     const user = new User({
       first_name,
       last_name,
-      user_name: newusername,
+      username: newusername,
       email,
       password,
       gender,
@@ -47,8 +47,24 @@ const userRegister = async (req, res = response) => {
       { id: user.id.toString() },
       "30m"
     );
-    console.log(emailVerificationToken);
-    return res.json(user);
+    const url = `${process.env.BASE_URL}/activate/${emailVerificationToken}`;
+    const data = {
+      name: first_name,
+      email: email,
+      url,
+    };
+    sendEmail(data);
+    const token = generateJWT({ id: user.id.toString() }, "7d");
+
+    return res.json({
+      id: user.id,
+      username: user.username,
+      first_name: user.first_name,
+      last_name: user.last_name,
+      token: token,
+      verified: user.verified,
+      msg: "Register success ! Please activate your email to start.",
+    });
   } catch (error) {
     return res.status(500).json({ msg: error.message });
   }

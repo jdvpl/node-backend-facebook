@@ -15,7 +15,7 @@ const UserSchema = Schema(
       trim: true,
       text: true,
     },
-    user_name: {
+    username: {
       type: String,
       required: [true, "Username is required"],
       trim: true,
