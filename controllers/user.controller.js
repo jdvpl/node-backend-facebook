@@ -2,6 +2,7 @@ const { response } = require("express");
 const bcrypt = require("bcryptjs");
 const User = require("../models/user");
 const { validateUsername } = require("../helpers/validation");
+const { generateJWT } = require("../helpers/generate-jwt");
 
 const userGet = async (req, res = response) => {
   const estado = { status: true };
@@ -42,6 +43,11 @@ const userRegister = async (req, res = response) => {
       bDay,
     });
     await user.save();
+    const emailVerificationToken = generateJWT(
+      { id: user.id.toString() },
+      "30m"
+    );
+    console.log(emailVerificationToken);
     return res.json(user);
   } catch (error) {
     return res.status(500).json({ msg: error.message });
