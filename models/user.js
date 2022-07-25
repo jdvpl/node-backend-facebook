@@ -32,7 +32,7 @@ const UserSchema = Schema(
       type: String,
       required: [true, "Password is required"],
     },
-    pricture: {
+    picture: {
       type: String,
       trim: true,
       default:

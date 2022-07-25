@@ -114,7 +114,6 @@ const login = async (req, res) => {
       verified: user.verified,
       isAdmin: user.isAdmin,
       picture: user.picture,
-      msg: "Login success!",
     });
   } catch (error) {
     return res.status(500).json({ msg: error.message });
