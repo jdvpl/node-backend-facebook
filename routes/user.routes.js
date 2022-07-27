@@ -6,8 +6,10 @@ const {
   userRegister,
   activateAccount,
   login,
+  sendVerification,
 } = require("../controllers/user.controller");
 const { existsEmail, noExisteCorreo } = require("../helpers/db-validators");
+const { checkAuth } = require("../middlewares/check-auth");
 const { validarCampos } = require("../middlewares/validar-campos");
 
 const router = Router();
@@ -42,7 +44,12 @@ router.post(
 router.get("/", userGet);
 router.post(
   "/activate",
-  [check("token", "Token is required").not().isEmpty(), validarCampos],
+
+  [
+    checkAuth,
+    check("token", "Token is required").not().isEmpty(),
+    validarCampos,
+  ],
   activateAccount
 );
 
@@ -57,5 +64,7 @@ router.post(
   ],
   login
 );
+
+router.get("/sendVerification", checkAuth, sendVerification);
 
 module.exports = router;

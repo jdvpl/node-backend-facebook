@@ -44,18 +44,15 @@ const userRegister = async (req, res = response) => {
       bDay,
     });
     await user.save();
-    const emailVerificationToken = generateJWT(
-      { id: user.id.toString() },
-      "2h"
-    );
-    const url = `${process.env.BASE_URL}/activate/${emailVerificationToken}`;
+
+    const url = `${process.env.BASE_URL}/activate/${user.id}`;
     const data = {
       name: first_name,
       email: email,
       url,
     };
     sendEmail(data);
-    const token = generateJWT({ id: user.id.toString() }, "7d");
+    const token = generateJWT({ id: user.id.toString() }, "15d");
     return res.json({
       id: user.id,
       username: user.username,
@@ -76,12 +73,11 @@ const userRegister = async (req, res = response) => {
 const activateAccount = async (req, res) => {
   const { token } = req.body;
   try {
-    const user = jwt.verify(token, process.env.SECRETORPUBLICKEY);
-    const check = await User.findById(user.id);
+    const check = await User.findById(token);
     if (check.verified) {
-      return res.status(200).json({ msg: "This email is already activated." });
+      return res.status(400).json({ msg: "This email is already activated." });
     } else {
-      await User.findByIdAndUpdate(user.id, { verified: true });
+      await User.findByIdAndUpdate(token, { verified: true });
       return res
         .status(200)
         .json({ msg: "Account has been activated successfully." });
@@ -120,9 +116,35 @@ const login = async (req, res) => {
   }
 };
 
+const sendVerification = async (req, res) => {
+  const { user } = req;
+
+  try {
+    const userd = await User.findById(user.id);
+    if (userd.verified) {
+      return res
+        .status(400)
+        .json({ msg: "This account is already activated." });
+    }
+    const url = `${process.env.BASE_URL}/activate/${user.id}`;
+    const data = {
+      name: user.first_name,
+      email: user.email,
+      url,
+    };
+    sendEmail(data);
+    return res
+      .status(200)
+      .json({ msg: "Email verification link has been sent to your email" });
+  } catch (error) {
+    return res.status(500).json({ msg: error.message });
+  }
+};
+
 module.exports = {
   userGet,
   userRegister,
   activateAccount,
   login,
+  sendVerification,
 };
