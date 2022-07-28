@@ -10,6 +10,7 @@ const {
   findUser,
   sendCodeVerification,
   validateCode,
+  changePassword,
 } = require("../controllers/user.controller");
 const { existsEmail, noExisteCorreo } = require("../helpers/db-validators");
 const { checkAuth } = require("../middlewares/check-auth");
@@ -96,6 +97,16 @@ router.post(
     validarCampos,
   ],
   validateCode
+);
+router.put(
+  "/changePassword",
+  [
+    check("email", "Email is required").isEmail(),
+    check("email").custom(noExisteCorreo),
+    check("password", "Code is required").not().isEmpty(),
+    validarCampos,
+  ],
+  changePassword
 );
 
 module.exports = router;

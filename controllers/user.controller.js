@@ -199,6 +199,20 @@ const validateCode = async (req, res) => {
     return res.status(500).json({ msg: error.message });
   }
 };
+
+const changePassword = async (req, res) => {
+  const { email, password } = req.body;
+
+  try {
+    const user = await User.findOne({ email });
+    user.password = password;
+    await user.save();
+
+    return res.status(200).json({ msg: "Password updated successfully" });
+  } catch (error) {
+    return res.status(500).json({ msg: error.message });
+  }
+};
 module.exports = {
   userGet,
   userRegister,
@@ -208,4 +222,5 @@ module.exports = {
   findUser,
   sendCodeVerification,
   validateCode,
+  changePassword,
 };
