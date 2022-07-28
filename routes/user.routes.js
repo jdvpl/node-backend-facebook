@@ -9,6 +9,7 @@ const {
   sendVerification,
   findUser,
   sendCodeVerification,
+  validateCode,
 } = require("../controllers/user.controller");
 const { existsEmail, noExisteCorreo } = require("../helpers/db-validators");
 const { checkAuth } = require("../middlewares/check-auth");
@@ -85,6 +86,16 @@ router.post(
     validarCampos,
   ],
   sendCodeVerification
+);
+router.post(
+  "/validateCode",
+  [
+    check("id", "Id is invalid").isMongoId(),
+    check("id", "Id is required").not().isEmpty(),
+    check("code", "Code is required").not().isEmpty(),
+    validarCampos,
+  ],
+  validateCode
 );
 
 module.exports = router;

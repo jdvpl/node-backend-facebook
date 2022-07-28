@@ -150,6 +150,7 @@ const findUser = async (req, res) => {
       email: user.email,
       picture: user.picture,
       username: user.username,
+      id: user.id,
     });
   } catch (error) {
     return res.status(500).json({ msg: error.message });
@@ -183,6 +184,21 @@ const sendCodeVerification = async (req, res) => {
     return res.status(500).json({ msg: error.message });
   }
 };
+
+const validateCode = async (req, res) => {
+  try {
+    const { id, code } = req.body;
+    console.log(id, code);
+    const codeSaved = await Code.findOne({ user: id });
+    console.log(codeSaved.code);
+    if (codeSaved.code !== code) {
+      return res.status(400).json({ msg: "Verification code is wrong." });
+    }
+    return res.status(200).json({ msg: "Ok" });
+  } catch (error) {
+    return res.status(500).json({ msg: error.message });
+  }
+};
 module.exports = {
   userGet,
   userRegister,
@@ -191,4 +207,5 @@ module.exports = {
   sendVerification,
   findUser,
   sendCodeVerification,
+  validateCode,
 };

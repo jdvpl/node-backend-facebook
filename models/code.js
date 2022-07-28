@@ -3,7 +3,7 @@ const bcrypt = require("bcryptjs");
 
 const CodeSchema = Schema({
   code: {
-    type: Number,
+    type: String,
     required: [true, "Number code is required"],
   },
   user: {
