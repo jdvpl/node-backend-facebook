@@ -1,10 +1,11 @@
 const { response } = require("express");
 const bcryptjs = require("bcryptjs");
-const User = require("../models/user");
 const { validateUsername } = require("../helpers/validation");
 const { generateJWT } = require("../helpers/generate-jwt");
-const { sendEmail } = require("../helpers/mailer");
+const { sendEmail, sendEmailCode } = require("../helpers/mailer");
 const jwt = require("jsonwebtoken");
+const { Code, User } = require("../models");
+const generateCode = require("../helpers/generateCode");
 
 const userGet = async (req, res = response) => {
   const estado = { status: true };
@@ -141,10 +142,53 @@ const sendVerification = async (req, res) => {
   }
 };
 
+const findUser = async (req, res) => {
+  try {
+    const { email } = req.body;
+    const user = await User.findOne({ email }).select("-password");
+    return res.status(200).json({
+      email: user.email,
+      picture: user.picture,
+      username: user.username,
+    });
+  } catch (error) {
+    return res.status(500).json({ msg: error.message });
+  }
+};
+
+const sendCodeVerification = async (req, res) => {
+  const { email } = req.body;
+
+  try {
+    const user = await User.findOne({ email }).select("-password");
+    await Code.findOneAndRemove({ user: user.id });
+    const code = generateCode(5);
+    const codesaved = new Code({
+      code,
+      user: user.id,
+    });
+
+    await codesaved.save();
+
+    const data = {
+      name: user.first_name,
+      email: user.email,
+      code,
+    };
+    sendEmailCode(data);
+    return res
+      .status(200)
+      .json({ msg: "Emai reset code has been sent to your email." });
+  } catch (error) {
+    return res.status(500).json({ msg: error.message });
+  }
+};
 module.exports = {
   userGet,
   userRegister,
   activateAccount,
   login,
   sendVerification,
+  findUser,
+  sendCodeVerification,
 };

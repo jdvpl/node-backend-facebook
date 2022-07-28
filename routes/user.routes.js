@@ -7,6 +7,8 @@ const {
   activateAccount,
   login,
   sendVerification,
+  findUser,
+  sendCodeVerification,
 } = require("../controllers/user.controller");
 const { existsEmail, noExisteCorreo } = require("../helpers/db-validators");
 const { checkAuth } = require("../middlewares/check-auth");
@@ -66,5 +68,23 @@ router.post(
 );
 
 router.get("/sendVerification", checkAuth, sendVerification);
+router.post(
+  "/findUser",
+  [
+    check("email", "Email is required").isEmail(),
+    check("email").custom(noExisteCorreo),
+    validarCampos,
+  ],
+  findUser
+);
+router.post(
+  "/sendCode",
+  [
+    check("email", "Email is required").isEmail(),
+    check("email").custom(noExisteCorreo),
+    validarCampos,
+  ],
+  sendCodeVerification
+);
 
 module.exports = router;
