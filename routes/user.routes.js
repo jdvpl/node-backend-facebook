@@ -45,7 +45,7 @@ router.post(
   ],
   userRegister
 );
-router.get("/", userGet);
+router.get("/", checkAuth, userGet);
 router.post(
   "/activate",
 
