@@ -10,6 +10,7 @@ class Server {
     this.paths = {
       users: "/api/users",
       post: "/api/post",
+      upload: "/api/upload",
     };
 
     // conectar a la base de datos
@@ -27,6 +28,7 @@ class Server {
   routes() {
     this.app.use(this.paths.users, require("../routes/user.routes"));
     this.app.use(this.paths.post, require("../routes/post.routes"));
+    this.app.use(this.paths.upload, require("../routes/upload.routes"));
   }
   listen() {
     this.app.listen(this.port, () => {
@@ -62,8 +64,6 @@ class Server {
     this.app.use(
       fileUpload({
         useTempFiles: true,
-        tempFileDir: "/tmp/",
-        createParentPath: true,
       })
     );
   }
