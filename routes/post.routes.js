@@ -9,6 +9,17 @@ const { validarCampos } = require("../middlewares/validar-campos");
 
 const router = Router();
 
-router.post("/", [checkAuth, validarCampos], createPost);
+router.post(
+  "/",
+  [
+    checkAuth,
+    check("user", "User Id is invalid").isMongoId(),
+    check("user", "Id is required").not().isEmpty(),
+    // check("text", "Text is required").not().isEmpty(),
+    // check("type", "Type is required").not().isEmpty(),
+    validarCampos,
+  ],
+  createPost
+);
 
 module.exports = router;

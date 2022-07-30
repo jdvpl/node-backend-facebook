@@ -9,6 +9,6 @@ const { validarCampos } = require("../middlewares/validar-campos");
 
 const router = Router();
 
-router.post("/", imageUpload, uploadImages);
+router.post("/", [checkAuth, imageUpload], uploadImages);
 
 module.exports = router;

@@ -3,11 +3,9 @@ const { Post } = require("../models");
 
 const createPost = async (req, res = response) => {
   try {
-    const dataPost = {
-      user,
-    };
     const post = new Post(req.body);
-    return res.json();
+    await post.save();
+    return res.status(200).json(post);
   } catch (error) {
     return res.status(500).json({ msg: error.message });
   }
