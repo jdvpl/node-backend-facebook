@@ -1,6 +1,6 @@
 const { Router } = require("express");
 const { check } = require("express-validator");
-const { createPost } = require("../controllers/post.controller");
+const { createPost, getAllPost } = require("../controllers/post.controller");
 
 const {} = require("../controllers/user.controller");
 const { existsEmail, noExisteCorreo } = require("../helpers/db-validators");
@@ -21,5 +21,6 @@ router.post(
   ],
   createPost
 );
+router.get("/getAllPost", checkAuth, getAllPost);
 
 module.exports = router;
