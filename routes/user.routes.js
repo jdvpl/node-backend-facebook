@@ -11,6 +11,7 @@ const {
   sendCodeVerification,
   validateCode,
   changePassword,
+  getProfile,
 } = require("../controllers/user.controller");
 const { existsEmail, noExisteCorreo } = require("../helpers/db-validators");
 const { checkAuth } = require("../middlewares/check-auth");
@@ -107,6 +108,16 @@ router.put(
     validarCampos,
   ],
   changePassword
+);
+
+router.get(
+  "/getProfile/:username",
+  [
+    checkAuth,
+    check("username", "Username is required").not().isEmpty(),
+    validarCampos,
+  ],
+  getProfile
 );
 
 module.exports = router;

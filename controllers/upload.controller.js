@@ -43,6 +43,23 @@ const uploadToCloudinary = async (file, path) => {
     );
   });
 };
+
+const listImages = async (req, res) => {
+  const { path, sort, max } = req.body;
+
+  try {
+    const data = await cloudinary.v2.search
+      .expression(`facebook-jdvpl/${path}`)
+      .sort_by("created_at", `${sort}`)
+      .max_results(`${max}`)
+      .execute();
+
+    return res.status(200).json(data);
+  } catch (error) {
+    return res.status(500).json({ msg: error.message });
+  }
+};
 module.exports = {
   uploadImages,
+  listImages,
 };

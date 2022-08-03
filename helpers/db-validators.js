@@ -16,6 +16,7 @@ const noExisteCorreo = async (email = "") => {
     throw new Error(`The email ${email} does not exist.`);
   }
 };
+
 const existeID = async (id = "") => {
   // verificar si el correo existe
   const existsID = await User.findById(id);

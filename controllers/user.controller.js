@@ -32,6 +32,7 @@ const userRegister = async (req, res = response) => {
   try {
     let tempusername = first_name.split(" ")[0] + last_name.split(" ")[0];
 
+    tempusername = tempusername.toLowerCase();
     let newusername = await validateUsername(tempusername);
     const user = new User({
       first_name,
@@ -213,6 +214,19 @@ const changePassword = async (req, res) => {
     return res.status(500).json({ msg: error.message });
   }
 };
+
+const getProfile = async (req, res) => {
+  const { username } = req.params;
+  try {
+    const user = await User.findOne({ username });
+    if (!user) {
+      return res.json({ ok: false, message: `This user does not exist.` });
+    }
+    return res.status(200).json(user);
+  } catch (error) {
+    return res.status(500).json({ msg: error.message });
+  }
+};
 module.exports = {
   userGet,
   userRegister,
@@ -223,4 +237,5 @@ module.exports = {
   sendCodeVerification,
   validateCode,
   changePassword,
+  getProfile,
 };

@@ -22,6 +22,10 @@ const PostSchema = Schema(
     background: {
       type: String,
     },
+    textColor: {
+      type: String,
+      default: "textBlack",
+    },
     comments: [
       {
         comment: {
