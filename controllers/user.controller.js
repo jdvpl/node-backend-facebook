@@ -4,7 +4,7 @@ const { validateUsername } = require("../helpers/validation");
 const { generateJWT } = require("../helpers/generate-jwt");
 const { sendEmail, sendEmailCode } = require("../helpers/mailer");
 const jwt = require("jsonwebtoken");
-const { Code, User } = require("../models");
+const { Code, User, Post } = require("../models");
 const generateCode = require("../helpers/generateCode");
 
 const userGet = async (req, res = response) => {
@@ -222,7 +222,10 @@ const getProfile = async (req, res) => {
     if (!user) {
       return res.json({ ok: false, message: `This user does not exist.` });
     }
-    return res.status(200).json(user);
+    const posts = await Post.find({ user: user.id })
+      .populate("user")
+      .sort({ createdAt: "desc" });
+    return res.status(200).json({ ...user.toObject(), posts });
   } catch (error) {
     return res.status(500).json({ msg: error.message });
   }
