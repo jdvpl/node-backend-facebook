@@ -13,6 +13,7 @@ const {
   changePassword,
   getProfile,
   updateProfilePicture,
+  updateCoverPicture,
 } = require("../controllers/user.controller");
 const { existsEmail, noExisteCorreo } = require("../helpers/db-validators");
 const { checkAuth } = require("../middlewares/check-auth");
@@ -128,6 +129,15 @@ router.put(
     validarCampos,
   ],
   updateProfilePicture
+);
+router.put(
+  "/updateCover",
+  [
+    checkAuth,
+    check("url", "Url picture is required").not().isEmpty(),
+    validarCampos,
+  ],
+  updateCoverPicture
 );
 
 module.exports = router;
