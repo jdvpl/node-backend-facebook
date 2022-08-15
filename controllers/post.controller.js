@@ -3,6 +3,7 @@ const { Post } = require("../models");
 
 const createPost = async (req, res = response) => {
   try {
+    console.log(req.body);
     const post = new Post(req.body);
     await post.save();
     return res.status(200).json(post);

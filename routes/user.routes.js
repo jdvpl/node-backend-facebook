@@ -12,6 +12,7 @@ const {
   validateCode,
   changePassword,
   getProfile,
+  updateProfilePicture,
 } = require("../controllers/user.controller");
 const { existsEmail, noExisteCorreo } = require("../helpers/db-validators");
 const { checkAuth } = require("../middlewares/check-auth");
@@ -118,6 +119,15 @@ router.get(
     validarCampos,
   ],
   getProfile
+);
+router.put(
+  "/updateProfilePicture",
+  [
+    checkAuth,
+    check("url", "Url picture is required").not().isEmpty(),
+    validarCampos,
+  ],
+  updateProfilePicture
 );
 
 module.exports = router;

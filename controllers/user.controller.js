@@ -230,6 +230,17 @@ const getProfile = async (req, res) => {
     return res.status(500).json({ msg: error.message });
   }
 };
+const updateProfilePicture = async (req, res) => {
+  try {
+    const { url } = req.body;
+    const resp = await User.findByIdAndUpdate(req.user.id, {
+      picture: url,
+    });
+    return res.status(200).json(url);
+  } catch (error) {
+    return res.status(500).json({ msg: error.message });
+  }
+};
 module.exports = {
   userGet,
   userRegister,
@@ -241,4 +252,5 @@ module.exports = {
   validateCode,
   changePassword,
   getProfile,
+  updateProfilePicture,
 };
