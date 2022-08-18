@@ -252,6 +252,20 @@ const updateCoverPicture = async (req, res) => {
     return res.status(500).json({ msg: error.message });
   }
 };
+const updateUserDetails = async (req, res) => {
+  try {
+    const resp = await User.findByIdAndUpdate(
+      req.user.id,
+      {
+        details: req.body,
+      },
+      { new: true }
+    );
+    return res.status(200).json(resp.details);
+  } catch (error) {
+    return res.status(500).json({ msg: error.message });
+  }
+};
 module.exports = {
   userGet,
   userRegister,
@@ -265,4 +279,5 @@ module.exports = {
   getProfile,
   updateProfilePicture,
   updateCoverPicture,
+  updateUserDetails,
 };

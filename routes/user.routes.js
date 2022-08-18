@@ -14,6 +14,7 @@ const {
   getProfile,
   updateProfilePicture,
   updateCoverPicture,
+  updateUserDetails,
 } = require("../controllers/user.controller");
 const { existsEmail, noExisteCorreo } = require("../helpers/db-validators");
 const { checkAuth } = require("../middlewares/check-auth");
@@ -139,5 +140,6 @@ router.put(
   ],
   updateCoverPicture
 );
+router.put("/updateUserDetails", [checkAuth], updateUserDetails);
 
 module.exports = router;
